@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -13,22 +14,38 @@ public class lab1_2 {
     static boolean[] layer = { false };
 
     public static void main(String[] args) throws IOException {
-        BufferedReader bReader = new BufferedReader(new FileReader("test.c"));
-        String readString;
-        String patternStr = "switch if else abstract default goto boolean package nchronzed break double implements private this byte import protected throw throws case extends instanceof public transient catch int return char final interface short try class finally long static void const float native strictfp volatile continue for new super while assert enum";
-        String[] patternArr = patternStr.split(" ");
-        StringBuffer readStringBuffer = new StringBuffer();
-        int count1 = 0;
-        while ((readString = bReader.readLine()) != null) {
-            readStringBuffer.append(readString);
-        }
-        bReader.close();
-        for (int i = 0; i < patternArr.length; i++) {
-            count1 += findByRegex(patternArr[i], readStringBuffer, i);
-        }
-        System.out.println(count1);
-        findSwitch(readStringBuffer);
+        System.out.println("Please enter the file name and the level of requirement: (seprated by space)");
+        Scanner input = new Scanner(System.in);
+        String fileLevelStrings = input.nextLine();
+        String[] fileLevelStringsArr = fileLevelStrings.split(" ");
+        int level = Integer.parseInt(fileLevelStringsArr[1]);
+        try {
+            BufferedReader bReader = new BufferedReader(new FileReader(fileLevelStringsArr[0]));
+            String readString;
+            String patternStr = "switch if else abstract default goto boolean package nchronzed break double implements private this byte import protected throw throws case extends instanceof public transient catch int return char final interface short try class finally long static void const float native strictfp volatile continue for new super while assert enum";
+            String[] patternArr = patternStr.split(" ");
+            StringBuffer readStringBuffer = new StringBuffer();
+            int count1 = 0;
+            while ((readString = bReader.readLine()) != null) {
+                readStringBuffer.append(readString);
+            }
+            bReader.close();
+            input.close();
+            for (int i = 0; i < patternArr.length; i++) {
+                count1 += findByRegex(patternArr[i], readStringBuffer, i);
+            }
+            System.out.println("total num: " + count1);
+            if (level > 1) {
+                findSwitch(readStringBuffer);
+                if (level > 2) {
+                    
+                }
+            }
 
+        } catch (Exception e) {
+            System.out.println("Can't find the file!");
+            System.out.println(e);
+        }
     }
 
     public static int findByRegex(String pattern, StringBuffer readStringBuffer, int index) {
