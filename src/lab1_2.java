@@ -7,6 +7,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class lab1_2 {
+    String[] specialPatterArr = {"switch", "if", "else"};
+    boolean[] hasSpecialPattern = { false };
+    boolean[] layer = { false };
     
     public static void main(String[] args) throws IOException {
         BufferedReader bReader = new BufferedReader(new FileReader("test.c"));
@@ -28,6 +31,26 @@ public class lab1_2 {
 
 
     public static int findByRegex(String pattern, StringBuffer readStringBuffer) {
+        Pattern patternObj = Pattern.compile(pattern);
+        Matcher macherObj = patternObj.matcher(readStringBuffer);
+        int countNum = 0;
+        while (macherObj.find()) {
+            countNum++;
+        }
+        return countNum;
+    }
+
+    public static int findSwitch(String pattern, StringBuffer readStringBuffer) {
+        Pattern patternObj = Pattern.compile(pattern);
+        Matcher macherObj = patternObj.matcher(readStringBuffer);
+        int countNum = 0;
+        while (macherObj.find()) {
+            countNum++;
+        }
+        return countNum;
+    }
+
+    public static int findIfElse(String pattern, StringBuffer readStringBuffer) {
         Pattern patternObj = Pattern.compile(pattern);
         Matcher macherObj = patternObj.matcher(readStringBuffer);
         int countNum = 0;
