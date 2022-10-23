@@ -24,7 +24,8 @@ public class lab1_2 {
         try {
             BufferedReader bReader = new BufferedReader(new FileReader(fileLevelStringsArr[0]));
             String readString;
-            String patternStr = "switch if else abstract default goto boolean package nchronzed break double implements private this byte import protected throw throws case extends instanceof public transient catch int return char final interface short try class finally long static void const float native strictfp volatile continue for new super while assert enum";
+            String patternStr = "void signed unsigned short long int float double char enum struct union typedef Bool Imaginary Complex const volatile restrict inline auto static extern register sizeof goto return break continue if else switch case default do while for";
+            
             String[] patternArr = patternStr.split(" ");
             StringBuffer readStringBuffer = new StringBuffer();
             int count1 = 0;
