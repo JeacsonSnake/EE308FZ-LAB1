@@ -99,8 +99,9 @@ public class lab1_2 {
     private static int findIfSeries(int index, StringBuffer readStringBuffer, int layerNum) {
         StringBuffer tempBuffer = readStringBuffer;
         int temp = 0;
-        int tempElseIfPosition = readStringBuffer.length();
-        int tempElsePosition = readStringBuffer.length();
+        int tempElseIfPosition = tempBuffer.length();
+        int tempElsePosition = tempBuffer.length();
+
         int findCloseBracket = readStringBuffer.length();
         Pattern patternIfObj = Pattern.compile("\\s[^else]\\sif.*?\\{");
         Matcher matcherIfObj = patternIfObj.matcher(readStringBuffer);
@@ -124,11 +125,20 @@ public class lab1_2 {
                     findCloseBracket = readStringBuffer.length();
                 }
             }
+        } else {
+            if (layers[layerNum][0] == "if(){}") {
+                if (matcherCloseBracketObj.find(index - 1)) {
+                    findCloseBracket = matcherCloseBracketObj.end();
+                } else {
+                    findCloseBracket = readStringBuffer.length();
+                }
+            }
         }
-        matcherCloseBracketObj.find(index);
-        if (matcherCloseBracketObj.end() - 1 == index) {
-            return index;
-        }
+
+        // if (matcherCloseBracketObj.find(index)) {
+        // tempCloseBracketPosition = matcherCloseBracketObj.start();
+        // }
+
         if (matcherIfObj.find(index)) {
             if (matcherIfObj.end() < findCloseBracket) {
                 for (int i = 0; i < layers[layerNum].length; i++) {
@@ -137,26 +147,35 @@ public class lab1_2 {
                 layers[layerNum][0] = "if(){}";
                 System.out.println("_________if_____________");
                 System.out.println(matcherIfObj.toString());
-                System.out.println("________________________");
+                System.out.println("___________layer: " + layerNum + "________");
+                System.out.println();
                 temp = findIfSeries(matcherIfObj.end(), tempBuffer, layerNum + 1);
-                matcherElseObj.find(temp);
-                int elsePosition = matcherElseObj.start();
-                matcherElseIfObj.find(temp);
-                int elseIfPosition = matcherElseIfObj.start();
-                if (elseIfPosition < elsePosition) {
+                if (matcherElseObj.find(temp)) {
+                    tempElsePosition = matcherElseObj.start();
+                }
+                if (matcherElseIfObj.find(temp)) {
+                    tempElseIfPosition = matcherElseIfObj.start();
+                }
+
+                if (tempElseIfPosition < tempElsePosition) {
                     layers[layerNum][1] = "else if(){}";
                     System.out.println("_________else if___________");
                     System.out.println(matcherElseIfObj.toString());
-                    System.out.println("___________________________");
+                    System.out.println("________layer: " + layerNum + "____________");
+                    System.out.println();
                     temp = findIfSeries(matcherElseIfObj.end(), tempBuffer, layerNum + 1);
-                    temp = findElseIf(temp, tempBuffer, layerNum + 1);
+                    temp = findElseIf(temp, tempBuffer, layerNum);
                 } else {
-                    matcherElseObj.find(temp);
                     layers[layerNum][2] = "else{}";
                     System.out.println("_________else_____________");
                     System.out.println(matcherElseObj.toString());
-                    System.out.println("__________________________");
-                    ifElseNum++;
+                    System.out.println("______layer: " + layerNum + "____________");
+                    System.out.println();
+                    if (layers[layerNum][1] == "else if(){}") {
+                        ifElseifElseNum++;
+                    } else {
+                        ifElseNum++;
+                    }
                     temp = findIfSeries(matcherElseObj.end(), tempBuffer, layerNum + 1);
                 }
 
@@ -164,7 +183,9 @@ public class lab1_2 {
                 return findCloseBracket;
             }
 
-        } else if (matcherOpenBracketObj.find(index)) {
+        } else if (matcherElseObj.find(index)) {
+            return findCloseBracket;
+        }else if (matcherOpenBracketObj.find(index)) {
             temp = findIfSeries(matcherOpenBracketObj.end(), tempBuffer, layerNum + 1);
         } else if (matcherCloseBracketObj.find(index)) {
             return matcherCloseBracketObj.end();
@@ -174,28 +195,33 @@ public class lab1_2 {
 
     private static int findElseIf(int index, StringBuffer tempBuffer, int layerNum) {
         int temp = index;
+        int elsePosition = tempBuffer.length();
+        int elseIfPosition = tempBuffer.length();
 
         Pattern patternElseIfObj = Pattern.compile("\\s?else\\sif.*?\\{");
         Matcher matcherElseIfObj = patternElseIfObj.matcher(tempBuffer);
 
         Pattern patternElseObj = Pattern.compile("\\s?else\\s?\\{");
         Matcher matcherElseObj = patternElseObj.matcher(tempBuffer);
-        matcherElseObj.find(index);
-        int elsePosition = matcherElseObj.start();
-        matcherElseIfObj.find(index);
-        int elseIfPosition = matcherElseIfObj.start();
+        if (matcherElseObj.find(index)) {
+            elsePosition = matcherElseObj.start();
+        }
+        if (matcherElseIfObj.find(index)) {
+            elseIfPosition = matcherElseIfObj.start();
+        }
 
         if (elseIfPosition < elsePosition) {
             System.out.println("_________else if___________");
             System.out.println(matcherElseIfObj.toString());
-            System.out.println("___________________________");
+            System.out.println("_________layer: " + layerNum + "___________");
+            System.out.println();
             temp = findIfSeries(matcherElseIfObj.end() - 1, tempBuffer, layerNum + 1);
-            temp = findElseIf(temp, tempBuffer, layerNum + 1);
+            temp = findElseIf(temp, tempBuffer, layerNum);
         } else {
             layers[layerNum][2] = "else{}";
             System.out.println("_________else____*________");
             System.out.println(matcherElseObj.toString());
-            System.out.println("__________________________");
+            System.out.println("_________layer: " + layerNum + "_________");
             ifElseifElseNum++;
             temp = findIfSeries(matcherElseObj.end(), tempBuffer, layerNum + 1);
         }
